@@ -21,10 +21,14 @@ def build_features(
 
     Keeps event_tag for debugging/evaluation (NOT used for training).
     """
-    required = {"device_id", "timestamp", "event_tag", *feature_cols}
+    required = {"device_id", "timestamp", *feature_cols}
     missing = required - set(df.columns)
     if missing:
         raise ValueError(f"Missing required columns: {sorted(missing)}")
+
+    if "event_tag" not in df.columns:
+        df = df.copy()
+        df["event_tag"] = None
 
     out = df.copy()
     out["timestamp"] = pd.to_datetime(out["timestamp"], errors="coerce")
